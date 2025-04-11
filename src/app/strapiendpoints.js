@@ -3,7 +3,7 @@ import { domain } from './config/config';
 let headers = {
     Accept: "application/json",
     "content-type": "application/json",
-    "cache-control": "no-control",
+    "cache-control": "no-cache",
     mode: "cors"
 };
 
