@@ -6,7 +6,6 @@
 // import Box from '@mui/material/Box';
 // import Rating from '@mui/material/Rating';
 
-
 // export default function Home() {
 
 // const [value, setValue] = React.useState(3);
@@ -45,8 +44,6 @@
 //           alt="img"
 //         />
 //         <div className="relative p-56 w-min mt-26 ml-12 bg-[#39DB4A] rounded-full"></div>
-
-        
 
 //         <div className="absolute flex lg:top-152">
 
@@ -90,16 +87,21 @@
 //         </div>
 //       </div>
 //     </div>
-    
+
 //   );
 // }
 
-
-import { fetchBanner, fetchCategory, fetchDishes, fetchService, fetchTestimonial } from "./strapiendpoints";
+import {
+  fetchBanner,
+  fetchCategory,
+  fetchDishes,
+  fetchService,
+  fetchTestimonial,
+} from "./strapiendpoints";
 import { domain } from "./config/config";
 import Container from "./components/container";
 import BannerSection from "./components/Banner/Banner";
-import Categories from "./components/Categories/Categories"
+import Categories from "./components/Categories/Categories";
 import Dishes from "./components/Dishes/Dishes";
 import Testimonials from "./components/Testimonials/Testimonials";
 import Service from "./components/Service/Service";
@@ -109,7 +111,7 @@ const Homepage = async () => {
   let CategoryData = null;
   let DishesData = null;
   let TestimonialsData = null;
-  let ServiceData =null;
+  let ServiceData = null;
   let error = null;
 
   try {
@@ -119,34 +121,34 @@ const Homepage = async () => {
     error = "Failed to fetch banner data";
   }
 
-  try{
+  try {
     const data = await fetchCategory();
     CategoryData = data.data[0];
     // console.log(CategoryData)
-  }catch(err){
-    error="failed to fetch category data"
+  } catch (err) {
+    error = "failed to fetch category data";
   }
 
-  try{
+  try {
     const data = await fetchDishes();
     DishesData = data.data[0];
     // console.log(DishesData)
-  }catch(err){
-    error="failed to fetch Dishesdata"
+  } catch (err) {
+    error = "failed to fetch Dishesdata";
   }
 
-  try{
+  try {
     const data = await fetchTestimonial();
     TestimonialsData = data.data[0];
-  }catch(err){
-    error="failed to fetch TestimonialsData"
+  } catch (err) {
+    error = "failed to fetch TestimonialsData";
   }
 
-  try{
-    const data =await fetchService();
+  try {
+    const data = await fetchService();
     ServiceData = data.data[0];
-  }catch(err){
-    error = "failed to fetch serviceData"
+  } catch (err) {
+    error = "failed to fetch serviceData";
   }
 
   if (error) return <div>{error}</div>;
@@ -154,52 +156,51 @@ const Homepage = async () => {
   const imgUrl = `${domain.APIURL}${bannerData?.Img?.url}`;
   const food1ImgUrl = `${domain.APIURL}${bannerData?.food1Img?.url}`;
   const food2ImgUrl = `${domain.APIURL}${bannerData?.food2Img?.url}`;
-  const maindish =`${domain.APIURL}${CategoryData?.Maindish?.url}`;
-  const breakfast =`${domain.APIURL}${CategoryData?.Breakfast?.url}`;
-  const dessert =`${domain.APIURL}${CategoryData?.Dessert?.url}`;
-  const browseall =`${domain.APIURL}${CategoryData?.Browseall?.url}`;
-
+  const maindish = `${domain.APIURL}${CategoryData?.Maindish?.url}`;
+  const breakfast = `${domain.APIURL}${CategoryData?.Breakfast?.url}`;
+  const dessert = `${domain.APIURL}${CategoryData?.Dessert?.url}`;
+  const browseall = `${domain.APIURL}${CategoryData?.Browseall?.url}`;
 
   return (
-    
+    <div>
+      {/* <Container> */}
       <div>
-        {/* <Container> */}
-          <div>
-            {bannerData && <BannerSection 
-                            heading = {bannerData.heading} 
-                            newheading = {bannerData.newheading}
-                            paragraph ={bannerData.paragraph} 
-                            watch ={bannerData.watch}
-                            order ={bannerData.order}
-                            bgImg= {imgUrl}
-                            playIcon = {bannerData?.playIcon}
-                            food1Img = {food1ImgUrl}
-                            food2Img={food2ImgUrl}/>
-                            }
-          </div>
+        {bannerData && (
+          <BannerSection
+            heading={bannerData.heading}
+            newheading={bannerData.newheading}
+            paragraph={bannerData.paragraph}
+            watch={bannerData.watch}
+            order={bannerData.order}
+            bgImg={imgUrl}
+            playIcon={bannerData?.playIcon}
+            food1Img={food1ImgUrl}
+            food2Img={food2ImgUrl}
+          />
+        )}
+      </div>
       {/* </Container> */}
 
+      {/* <Container> */}
+      {CategoryData && (
+        <Categories
+          favourites={CategoryData.Favorites}
+          heading={CategoryData.category}
+          maindish={maindish}
+          breakfast={breakfast}
+          dessert={dessert}
+          browseall={browseall}
+        />
+      )}
+      {/* </Container> */}
 
-     
-        {/* <Container> */}
-          {CategoryData && <Categories
-            favourites={CategoryData.Favorites}
-            heading = {CategoryData.category}
-            maindish={maindish}
-            breakfast={breakfast}
-            dessert={dessert}
-            browseall={browseall}
-
-          />}
-        {/* </Container> */}
-     
-
-        {DishesData && <Dishes
-          spldish  ={DishesData.spldish}
-          heading ={DishesData.heading}
-          fattoushsalad = {`${domain.APIURL}${DishesData?.fattoushsalad?.url}`}
-          vegsalad = {`${domain.APIURL}${DishesData?.vegsalad?.url}`}
-          eggsalad = {`${domain.APIURL}${DishesData?.eggsalad?.url}`}
+      {DishesData && (
+        <Dishes
+          spldish={DishesData.spldish}
+          heading={DishesData.heading}
+          fattoushsalad={`${domain.APIURL}${DishesData?.fattoushsalad?.url}`}
+          vegsalad={`${domain.APIURL}${DishesData?.vegsalad?.url}`}
+          eggsalad={`${domain.APIURL}${DishesData?.eggsalad?.url}`}
           fattoushtext={DishesData.fattoushtext}
           vegtext={DishesData.vegtext}
           eggtext={DishesData.eggtext}
@@ -207,47 +208,47 @@ const Homepage = async () => {
           starIcon={DishesData.starIcon}
           right={DishesData.angleRight}
           left={DishesData.angleLeft}
+        />
+      )}
 
-        />}
-
-
-        {TestimonialsData && <Testimonials 
-          testimonial= {TestimonialsData.testimonial}
-          heading = {TestimonialsData.heading}
-          paragraph = {TestimonialsData.paragraph}
-          testimonialpic = {`${domain.APIURL}${TestimonialsData?.testimonialpic?.url}`}
+      {TestimonialsData && (
+        <Testimonials
+          testimonial={TestimonialsData.testimonial}
+          heading={TestimonialsData.heading}
+          paragraph={TestimonialsData.paragraph}
+          testimonialpic={`${domain.APIURL}${TestimonialsData?.testimonialpic?.url}`}
           cmrfb={TestimonialsData.cmrfb}
-          cmrone ={`${domain.APIURL}${TestimonialsData?.cmrone?.url}`}
-          cmrtwo ={`${domain.APIURL}${TestimonialsData?.cmrtwo?.url}`}
-          cmrthree ={`${domain.APIURL}${TestimonialsData?.cmrthree?.url}`}
+          cmrone={`${domain.APIURL}${TestimonialsData?.cmrone?.url}`}
+          cmrtwo={`${domain.APIURL}${TestimonialsData?.cmrtwo?.url}`}
+          cmrthree={`${domain.APIURL}${TestimonialsData?.cmrthree?.url}`}
           starIcon={DishesData.starIcon}
-        />}
+        />
+      )}
 
+      {ServiceData && (
+        <Service
+          story={ServiceData.story}
+          heading={ServiceData.heading}
+          paragraph={ServiceData.Paragraph}
+          explore={ServiceData.explore}
+          catering={ServiceData.catering}
+          cateringDes={ServiceData.cateringDes}
+          delivery={ServiceData.delivery}
+          deliveryDes={ServiceData.deliveryDes}
+          order={ServiceData.order}
+          orderDes={ServiceData.orderDes}
+          gift={ServiceData.gift}
+          giftDes={ServiceData.giftDes}
+          cateringIcon={ServiceData.cateringIcon}
+          deliveryIcon={ServiceData.deliveryIcon}
+          orderIcon={ServiceData.orderIcon}
+          giftIcon={ServiceData.giftIcon}
+        />
+      )}
 
-          {ServiceData && <Service
-            story= {ServiceData.story}
-            heading = {ServiceData.heading}
-            paragraph = {ServiceData.Paragraph}
-            explore = {ServiceData.explore}
-            catering = {ServiceData.catering}
-            cateringDes = {ServiceData.cateringDes}
-            delivery = {ServiceData.delivery}
-            deliveryDes = {ServiceData.deliveryDes}
-            order = {ServiceData.order}
-            orderDes = {ServiceData.orderDes}
-            gift = {ServiceData.gift}
-            giftDes = {ServiceData.giftDes}
-            cateringIcon = {ServiceData.cateringIcon}
-            deliveryIcon = {ServiceData.deliveryIcon}
-            orderIcon = {ServiceData.orderIcon}
-            giftIcon = {ServiceData.giftIcon}
-          />}
-
-{/* </Container> */}
-      </div>
-
-      
-    
+      {/* </Container> */}
+      <h1>Hello World!</h1>
+    </div>
   );
 };
 
