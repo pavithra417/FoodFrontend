@@ -1,103 +1,254 @@
-import Image from "next/image";
+// "use client"
+// import Image from "next/image";
+// import { fetchBanner } from "./strapiendpoints";
+// import { useState, useEffect } from "react";
+// import * as React from 'react';
+// import Box from '@mui/material/Box';
+// import Rating from '@mui/material/Rating';
 
-export default function Home() {
+
+// export default function Home() {
+
+// const [value, setValue] = React.useState(3);
+// const [Svalue, setSvalue] = React.useState(4);
+// const [homepageData, setHomepageData] = useState(null);
+
+//     useEffect(() => {
+//         async function getHomepageData() {
+//             const data = await fetchHomepage();
+//             setHomepageData(data);
+//         }
+//         getHomepageData();
+//     }, []);
+
+//     if (!homepageData) {
+//         return <h1>Loading...</h1>;
+//     }
+
+//   return (
+//     <div className="grid grid-cols-2 pt-24 w-full">
+//       <div className="xl:p-20 lg:p-10 xl:m-5 lg:my-10 lg:ml-5 md:m-10 lg:text-start md:text-center col-span-2 lg:col-span-1">
+//         <h1 className="text-5xl font-bold xl:p-5 lg:my-5 md:m-5">{homepageData.heading}</h1>
+//         <p className="font-base text-xl text-gray-700 xl:p-5 lg:py-2 lg:my-5 md:m-5">{homepageData.paragraph}</p>
+//         <div className="flex xl:m-5 md:m-5 md:justify-center">
+//           <p className="xl:py-5 xl:px-10 lg:px-3 lg:py-2 md:p-2 md:mx-2 text-white text-xl shadow-xl font-semibold bg-[#39DB4A] rounded-full">{homepageData.order}</p>
+//           <p className="xl:p-5 lg:p-2 md:p-2 text-xl font-semibold">{homepageData.watch}</p>
+//             <span  className=" xl:py-5 xl:px-5.5 lg:p-2 md:p-2 items-center justify-center bg-white rounded-full shadow-black shadow-lg" dangerouslySetInnerHTML={{ __html: homepageData.playIcon }}/>
+//         </div>
+//       </div>
+
+//       <div className="">
+
+//       <img className="absolute z-8"
+//           src={homepageData.Img}
+//           width="500"
+//           alt="img"
+//         />
+//         <div className="relative p-56 w-min mt-26 ml-12 bg-[#39DB4A] rounded-full"></div>
+
+        
+
+//         <div className="absolute flex lg:top-152">
+
+//           <div className="flex bg-white z-10 mx-5 p-2 rounded-xl shadow-2xl">
+//             <div>
+//               <img src={homepageData.food1Img} className="rounded-xl h-20 w-20"/>
+//             </div>
+//             <div className="px-2">
+//               <p>Spicy noodles</p>
+//               <Box sx={{ '& > legend': { mt: 2 } }}>
+//                 <Rating
+//                   name="simple-controlled"
+//                   value={value}
+//                   onChange={(event, newValue) => {
+//                     setValue(newValue);
+//                   }}
+//                 />
+//               </Box>
+//               <p>$18.00</p>
+//             </div>
+//           </div>
+
+//           <div className="flex bg-white z-10 mx-5 p-2 rounded-xl shadow-2xl">
+//             <div>
+//               <img src={homepageData.food2Img} className="rounded-xl h-20 w-20"/>
+//             </div>
+//             <div className="px-2">
+//               <p>Vegetarian salad</p>
+//               <Box sx={{ '& > legend': { mt: 2 } }}>
+//                 <Rating
+//                   name="simple-controlled"
+//                   svalue={Svalue}
+//                   onChange={(event, newSValue) => {
+//                     setSvalue(newSValue);
+//                   }}
+//                 />
+//               </Box>
+//               <p>$23.00</p>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+    
+//   );
+// }
+
+
+import { fetchBanner, fetchCategory, fetchDishes, fetchService, fetchTestimonial } from "./strapiendpoints";
+import { domain } from "./config/config";
+import Container from "./components/container";
+import BannerSection from "./components/Banner/Banner";
+import Categories from "./components/Categories/Categories"
+import Dishes from "./components/Dishes/Dishes";
+import Testimonials from "./components/Testimonials/Testimonials";
+import Service from "./components/Service/Service";
+
+const Homepage = async () => {
+  let bannerData = null;
+  let CategoryData = null;
+  let DishesData = null;
+  let TestimonialsData = null;
+  let ServiceData =null;
+  let error = null;
+
+  try {
+    const data = await fetchBanner(); // already parsed JSON
+    bannerData = data.data[0]; // No need to use .attributes here
+  } catch (err) {
+    error = "Failed to fetch banner data";
+  }
+
+  try{
+    const data = await fetchCategory();
+    CategoryData = data.data[0];
+    // console.log(CategoryData)
+  }catch(err){
+    error="failed to fetch category data"
+  }
+
+  try{
+    const data = await fetchDishes();
+    DishesData = data.data[0];
+    // console.log(DishesData)
+  }catch(err){
+    error="failed to fetch Dishesdata"
+  }
+
+  try{
+    const data = await fetchTestimonial();
+    TestimonialsData = data.data[0];
+  }catch(err){
+    error="failed to fetch TestimonialsData"
+  }
+
+  try{
+    const data =await fetchService();
+    ServiceData = data.data[0];
+  }catch(err){
+    error = "failed to fetch serviceData"
+  }
+
+  if (error) return <div>{error}</div>;
+
+  const imgUrl = `${domain.APIURL}${bannerData?.Img?.url}`;
+  const food1ImgUrl = `${domain.APIURL}${bannerData?.food1Img?.url}`;
+  const food2ImgUrl = `${domain.APIURL}${bannerData?.food2Img?.url}`;
+  const maindish =`${domain.APIURL}${CategoryData?.Maindish?.url}`;
+  const breakfast =`${domain.APIURL}${CategoryData?.Breakfast?.url}`;
+  const dessert =`${domain.APIURL}${CategoryData?.Dessert?.url}`;
+  const browseall =`${domain.APIURL}${CategoryData?.Browseall?.url}`;
+
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    
+      <div>
+        {/* <Container> */}
+          <div>
+            {bannerData && <BannerSection 
+                            heading = {bannerData.heading} 
+                            newheading = {bannerData.newheading}
+                            paragraph ={bannerData.paragraph} 
+                            watch ={bannerData.watch}
+                            order ={bannerData.order}
+                            bgImg= {imgUrl}
+                            playIcon = {bannerData?.playIcon}
+                            food1Img = {food1ImgUrl}
+                            food2Img={food2ImgUrl}/>
+                            }
+          </div>
+      {/* </Container> */}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+     
+        {/* <Container> */}
+          {CategoryData && <Categories
+            favourites={CategoryData.Favorites}
+            heading = {CategoryData.category}
+            maindish={maindish}
+            breakfast={breakfast}
+            dessert={dessert}
+            browseall={browseall}
+
+          />}
+        {/* </Container> */}
+     
+
+        {DishesData && <Dishes
+          spldish  ={DishesData.spldish}
+          heading ={DishesData.heading}
+          fattoushsalad = {`${domain.APIURL}${DishesData?.fattoushsalad?.url}`}
+          vegsalad = {`${domain.APIURL}${DishesData?.vegsalad?.url}`}
+          eggsalad = {`${domain.APIURL}${DishesData?.eggsalad?.url}`}
+          fattoushtext={DishesData.fattoushtext}
+          vegtext={DishesData.vegtext}
+          eggtext={DishesData.eggtext}
+          description={DishesData.description}
+          starIcon={DishesData.starIcon}
+          right={DishesData.angleRight}
+          left={DishesData.angleLeft}
+
+        />}
+
+
+        {TestimonialsData && <Testimonials 
+          testimonial= {TestimonialsData.testimonial}
+          heading = {TestimonialsData.heading}
+          paragraph = {TestimonialsData.paragraph}
+          testimonialpic = {`${domain.APIURL}${TestimonialsData?.testimonialpic?.url}`}
+          cmrfb={TestimonialsData.cmrfb}
+          cmrone ={`${domain.APIURL}${TestimonialsData?.cmrone?.url}`}
+          cmrtwo ={`${domain.APIURL}${TestimonialsData?.cmrtwo?.url}`}
+          cmrthree ={`${domain.APIURL}${TestimonialsData?.cmrthree?.url}`}
+          starIcon={DishesData.starIcon}
+        />}
+
+
+          {ServiceData && <Service
+            story= {ServiceData.story}
+            heading = {ServiceData.heading}
+            paragraph = {ServiceData.Paragraph}
+            explore = {ServiceData.explore}
+            catering = {ServiceData.catering}
+            cateringDes = {ServiceData.cateringDes}
+            delivery = {ServiceData.delivery}
+            deliveryDes = {ServiceData.deliveryDes}
+            order = {ServiceData.order}
+            orderDes = {ServiceData.orderDes}
+            gift = {ServiceData.gift}
+            giftDes = {ServiceData.giftDes}
+            cateringIcon = {ServiceData.cateringIcon}
+            deliveryIcon = {ServiceData.deliveryIcon}
+            orderIcon = {ServiceData.orderIcon}
+            giftIcon = {ServiceData.giftIcon}
+          />}
+
+{/* </Container> */}
+      </div>
+
+      
+    
   );
-}
+};
+
+export default Homepage;
